@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const ManageTask = () => {
+export const ManageTasks = () => {
   return (
     <div>ManageTask</div>
   )
