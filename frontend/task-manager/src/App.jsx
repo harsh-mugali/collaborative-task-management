@@ -8,7 +8,7 @@ import { CreateTask } from './pages/Admin/CreateTask'
 import { ManageUsers } from './pages/Admin/ManageUsers'
 
 import UserDashboard from './pages/User/UserDashboard'
-import { MyTasks } from './pages/User/MyTasks'
+import MyTasks  from './pages/User/MyTasks'
 import ViewTaskDetails from './pages/User/ViewTaskDetails'
 
 import PrivateRoute from './routes/PrivateRoute'
