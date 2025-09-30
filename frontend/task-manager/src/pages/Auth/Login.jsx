@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import AuthLayout from '../../components/AuthLayout'
 import { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom"
@@ -6,12 +6,14 @@ import Input from '../../components/Inputs/Input';
 import { validateEmail } from '../../utils/helper';
 import { API_PATHS } from '../../utils/apiPaths';
 import axiosInstance from '../../utils/axiosInstance';
+import { UserContext } from '../../context/userContext';
 
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
+  const{updateUser} = useContext(UserContext)
   const navigate = useNavigate();
 
   // Handle Login Form Submit
@@ -42,6 +44,7 @@ export const Login = () => {
 
       if (token) {
         localStorage.setItem("token", token);
+        updateUser(response.data)
 
         //Redirect based on role
         if (role === "admin") {

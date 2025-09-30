@@ -1,9 +1,13 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import AuthLayout from '../../components/AuthLayout'
 import { validateEmail } from '../../utils/helper';
 import ProfilePhotoSelector from '../../components/Inputs/ProfilePhotoSelector';
 import Input from '../../components/Inputs/Input';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axiosInstance from '../../utils/axiosInstance';
+import { API_PATHS } from '../../utils/apiPaths';
+import { UserContext } from '../../context/userContext';
+import uploadImage from '../../utils/uploadImage';
 
 export const Signup = () => {
   const [profilePic, setProfilePic] = useState(null);
@@ -13,10 +17,14 @@ export const Signup = () => {
   const [adminInviteToken, setAdminInviteToken] = useState('')
   const [error, setError] = useState(null);
 
+
+  const { updateUser } = useContext(UserContext)
+  const navigate = useNavigate();
+
   // Handle Signup Form Submit
   const handleSignUp = async (e) => {
     e.preventDefault();
-
+    let profileImageUrl = "";
     if (!fullName) {
       setError("Please enter a full name");
       return;
@@ -34,6 +42,40 @@ export const Signup = () => {
     setError("");
 
     //Signup API Call
+    try {
+      if(profilePic){
+        const imgUploadRes = await uploadImage(profilePic);
+        profileImageUrl = imgUploadRes.imageUrl || "";
+      }
+
+      const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
+        name: fullName,
+        email,
+        password,
+        profileImageUrl,
+        adminInviteToken
+      });
+
+      const { token, role } = response.data;
+
+      if (token) {
+        localStorage.setItem("token", token);
+        updateUser(response.data)
+
+        //Redirect based on role
+        if (role === "admin") {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/user/dashboard");
+        }
+      }
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    }
   };
 
   return (
@@ -50,31 +92,31 @@ export const Signup = () => {
             <Input
               value={fullName}
               onChange={({ target }) => setFullName(target.value)}
-            label="Full Name"
-            placeholder="John"
-            type="text"
-           />
+              label="Full Name"
+              placeholder="John"
+              type="text"
+            />
             <Input
-            value={email}
-            onChange={({ target }) => setEmail(target.value)}
-            label="Email Address"
-            placeholder="john@example.com"
-            type="text"
-          />
-          <Input
-            value={password}
-            onChange={({ target }) => setPassword(target.value)}
-            label="Password"
-            placeholder="Min 8 Character"
-            type="password"
-          />
-          <Input
-            value={password}
-            onChange={({ target }) => setPassword(target.value)}
-            label="Admin Invite Token"
-            placeholder="6 Digit Code"
-            type="text"
-          />
+              value={email}
+              onChange={({ target }) => setEmail(target.value)}
+              label="Email Address"
+              placeholder="john@example.com"
+              type="text"
+            />
+            <Input
+              value={password}
+              onChange={({ target }) => setPassword(target.value)}
+              label="Password"
+              placeholder="Min 8 Character"
+              type="password"
+            />
+            <Input
+              value={adminInviteToken}
+              onChange={({ target }) => setAdminInviteToken(target.value)}
+              label="Admin Invite Token"
+              placeholder="6 Digit Code"
+              type="text"
+            />
           </div>
 
           {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
@@ -84,13 +126,13 @@ export const Signup = () => {
           </button>
 
           <p className="text-[13px] text-slate-800 mt-3">
-           Already an account?{" "}
+            Already an account?{" "}
             <Link className="font-medium text-primary underline" to="/login">
               Login
             </Link>
           </p>
 
-          
+
         </form>
       </div>
     </AuthLayout>
