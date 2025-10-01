@@ -25,10 +25,9 @@ export const ManageUsers = () => {
   const handleDownloadReport = async () => {
 
     try {
-      const response = await axiosInstance.get(API_PATHS.REPORTS.EXPORT_TASKS, {
+      const response = await axiosInstance.get(API_PATHS.REPORTS.EXPORT_USERS, {
         responseType: "blob",
       });
-
       // Create a URL for the blob
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
