@@ -8,14 +8,15 @@ import { CreateTask } from './pages/Admin/CreateTask'
 import { ManageUsers } from './pages/Admin/ManageUsers'
 
 import UserDashboard from './pages/User/UserDashboard'
-import MyTasks  from './pages/User/MyTasks'
+import MyTasks from './pages/User/MyTasks'
 import ViewTaskDetails from './pages/User/ViewTaskDetails'
 
 import PrivateRoute from './routes/PrivateRoute'
 import UserProvider, { UserContext } from './context/userContext'
 import { useContext } from 'react'
 import { Toaster } from 'react-hot-toast'
-
+import PrintPage from './components/PrintPage'
+import { Link } from 'react-router-dom'
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
               <Route path="/admin/tasks" element={<ManageTasks />} />
               <Route path="/admin/create-task" element={<CreateTask />} />
               <Route path="/admin/users" element={<ManageUsers />} />
+              <Route path='/admin/print-page' element={<PrintPage />} />
             </Route>
             {/*User Routes*/}
             <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
@@ -48,12 +50,12 @@ function App() {
       </div>
 
       <Toaster
-      toastOptions={{
-        className:"",
-      style: {
-          fontSize: "13px",
-        },
-      }}
+        toastOptions={{
+          className: "",
+          style: {
+            fontSize: "13px",
+          },
+        }}
       />
     </UserProvider>
   )

@@ -72,9 +72,7 @@ const getTasks = async (req, res) => {
     }
 };
 
-// @desc Get task by ID
-// @route GET /api/tasks/:id
-// @access Private
+// get task by id
 const getTaskById = async (req, res) => {
     try {
         const task = await Task.findById(req.params.id).populate(
@@ -88,10 +86,7 @@ const getTaskById = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
-
-// @desc Create a new task (Admin only)
-// @route POST /api/tasks/
-// @access Private (Admin)
+// aoi to create a task
 const createTask = async (req, res) => {
     try {
         const {

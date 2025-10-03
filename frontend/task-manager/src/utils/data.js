@@ -33,6 +33,12 @@ export const SIDE_MENU_DATA = [
     },
     {
         id: "05",
+        label: "Team Page",
+        icon: LuUsers,
+        path: "/admin/print-page",
+    },
+    {
+        id: "06",
         label: "Logout",
         icon: LuLogOut,
         path: "logout",
